@@ -2,7 +2,7 @@
 
 ## Description
 
-This app helps you get personalized supper ideas after a brief set of questions about your preferences.
+This app helps you get personalized supper ideas after a brief set of questions about your preferences. You can now save the ideas as a Word document or share them directly from the app.
 
 ## User Journey
 
@@ -24,14 +24,16 @@ This app helps you get personalized supper ideas after a brief set of questions 
 
 3. **Generating Supper Ideas**
 
-    - The user clicks on a "Get Supper Ideas" button.
+    - The user clicks on the "Get Supper Ideas" button.
     - The app shows a loading state while fetching ideas.
     - The app uses AI to generate personalized supper ideas based on the user's answers.
 
-4. **Viewing Supper Ideas**
+4. **Viewing and Saving Supper Ideas**
 
     - Once the ideas are ready, the app displays a list of supper suggestions.
-    - Each suggestion may include the dish name, brief description, and possibly a link to a recipe.
+    - The user can now:
+        - **Save as Word Document**: Click the "Save as Word" button to download the supper ideas as a Word document.
+        - **Share**: Click the "Share" button to share the supper ideas using the device's sharing options (e.g., email, messaging apps).
 
 5. **Signing Out**
 

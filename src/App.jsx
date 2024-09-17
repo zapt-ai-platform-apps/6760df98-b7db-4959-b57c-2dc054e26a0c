@@ -3,6 +3,8 @@ import { supabase, createEvent } from './supabaseClient'
 import { Auth } from '@supabase/auth-ui-solid'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { SolidMarkdown } from "solid-markdown"
+import { Document, Packer, Paragraph, TextRun } from 'docx'
+import { saveAs } from 'file-saver'
 
 function App() {
   const [user, setUser] = createSignal(null)
@@ -18,6 +20,9 @@ function App() {
 
   // Response
   const [supperIdeas, setSupperIdeas] = createSignal('')
+
+  // Check if Web Share API is available
+  const isShareSupported = navigator.share !== undefined
 
   const checkUserSignedIn = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -73,6 +78,37 @@ Please format the response in markdown.`
     await supabase.auth.signOut()
   }
 
+  const handleSaveAsWord = async () => {
+    const doc = new Document({
+      sections: [{
+        properties: {},
+        children: [
+          new Paragraph({
+            children: [new TextRun(supperIdeas().replace(/<\/?[^>]+(>|$)/g, ""))],
+          }),
+        ],
+      }],
+    })
+
+    const blob = await Packer.toBlob(doc)
+    saveAs(blob, "SupperIdeas.docx")
+  }
+
+  const handleShare = async () => {
+    if (isShareSupported) {
+      try {
+        await navigator.share({
+          title: 'My Supper Ideas',
+          text: supperIdeas().replace(/<\/?[^>]+(>|$)/g, ""),
+        })
+      } catch (error) {
+        console.error('Error sharing:', error)
+      }
+    } else {
+      alert('Sharing is not supported on this device.')
+    }
+  }
+
   return (
     <div class="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
       <Show
@@ -83,7 +119,7 @@ Please format the response in markdown.`
             <a href="https://www.zapt.ai" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:underline mb-4 block text-center">
               Learn more about ZAPT
             </a>
-            <Auth 
+            <Auth
               supabaseClient={supabase}
               appearance={{ theme: ThemeSupa }}
               providers={['google', 'facebook', 'apple']}
@@ -181,6 +217,22 @@ Please format the response in markdown.`
               <h3 class="text-xl font-semibold mb-2 text-purple-300">Your Supper Ideas:</h3>
               <div class="text-white prose">
                 <SolidMarkdown children={supperIdeas()} />
+              </div>
+              <div class="flex space-x-4 mt-4">
+                <button
+                  class="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+                  onClick={handleSaveAsWord}
+                >
+                  Save as Word
+                </button>
+                <Show when={isShareSupported}>
+                  <button
+                    class="flex-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer"
+                    onClick={handleShare}
+                  >
+                    Share
+                  </button>
+                </Show>
               </div>
             </div>
           </Show>
