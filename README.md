@@ -49,7 +49,7 @@ This app helps you get personalized supper ideas after a brief set of questions 
 
 ## Additional Features
 
-- The app has a modern dark theme with bright purple accents for action elements, making it visually appealing and user-friendly.
+- The app now has a clean light theme with subtle accents for action elements, making it visually appealing and user-friendly.
 - Responsive design ensures optimal experience across different screen sizes.
 - Loading states are displayed during API calls to provide feedback to the user.
 - Buttons are disabled during loading to prevent multiple submissions.

@@ -141,13 +141,13 @@ Please format the response as a JSON object with a property called "meals", like
   }
 
   return (
-    <div class="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
+    <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-800">
       <Show
         when={currentPage() === 'homePage'}
         fallback={
-          <div class="w-full max-w-md p-6 bg-gray-800 rounded-lg shadow-md h-full">
+          <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md h-full">
             <h2 class="text-2xl font-bold mb-4 text-center text-purple-500">Sign in with ZAPT</h2>
-            <a href="https://www.zapt.ai" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:underline mb-4 block text-center">
+            <a href="https://www.zapt.ai" target="_blank" rel="noopener noreferrer" class="text-purple-500 hover:underline mb-4 block text-center">
               Learn more about ZAPT
             </a>
             <Auth
@@ -158,7 +158,7 @@ Please format the response as a JSON object with a property called "meals", like
           </div>
         }
       >
-        <div class="w-full max-w-2xl p-6 bg-gray-800 rounded-lg shadow-md h-full">
+        <div class="w-full max-w-2xl p-6 bg-white rounded-lg shadow-md h-full">
           <h1 class="text-2xl font-bold mb-6 text-center text-purple-500">Get Supper Ideas</h1>
           <div class="flex justify-end mb-6">
             <button
@@ -172,9 +172,9 @@ Please format the response as a JSON object with a property called "meals", like
           <form class="space-y-4">
             {/* Dietary Preference */}
             <div>
-              <label class="block mb-1 text-purple-300">Dietary Preference</label>
+              <label class="block mb-1 text-gray-700">Dietary Preference</label>
               <select
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border text-black"
+                class="w-full px-3 py-2 bg-white border border-gray-300 rounded box-border text-gray-800"
                 value={dietaryPreference()}
                 onInput={(e) => setDietaryPreference(e.target.value)}
               >
@@ -186,10 +186,10 @@ Please format the response as a JSON object with a property called "meals", like
             </div>
             {/* Preferred Cuisines */}
             <div>
-              <label class="block mb-1 text-purple-300">Preferred Cuisines</label>
+              <label class="block mb-1 text-gray-700">Preferred Cuisines</label>
               <input
                 type="text"
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border text-black"
+                class="w-full px-3 py-2 bg-white border border-gray-300 rounded box-border text-gray-800"
                 placeholder="e.g., Italian, Chinese, Mexican"
                 value={cuisineTypes().join(', ')}
                 onInput={(e) => setCuisineTypes(e.target.value.split(',').map(s => s.trim()))}
@@ -197,10 +197,10 @@ Please format the response as a JSON object with a property called "meals", like
             </div>
             {/* Include Ingredients */}
             <div>
-              <label class="block mb-1 text-purple-300">Ingredients to Include</label>
+              <label class="block mb-1 text-gray-700">Ingredients to Include</label>
               <input
                 type="text"
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border text-black"
+                class="w-full px-3 py-2 bg-white border border-gray-300 rounded box-border text-gray-800"
                 placeholder="e.g., chicken, broccoli"
                 value={includeIngredients()}
                 onInput={(e) => setIncludeIngredients(e.target.value)}
@@ -208,10 +208,10 @@ Please format the response as a JSON object with a property called "meals", like
             </div>
             {/* Exclude Ingredients */}
             <div>
-              <label class="block mb-1 text-purple-300">Ingredients to Exclude</label>
+              <label class="block mb-1 text-gray-700">Ingredients to Exclude</label>
               <input
                 type="text"
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border text-black"
+                class="w-full px-3 py-2 bg-white border border-gray-300 rounded box-border text-gray-800"
                 placeholder="e.g., nuts, dairy"
                 value={excludeIngredients()}
                 onInput={(e) => setExcludeIngredients(e.target.value)}
@@ -219,10 +219,10 @@ Please format the response as a JSON object with a property called "meals", like
             </div>
             {/* Cooking Time */}
             <div>
-              <label class="block mb-1 text-purple-300">Cooking Time Available (minutes)</label>
+              <label class="block mb-1 text-gray-700">Cooking Time Available (minutes)</label>
               <input
                 type="number"
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border text-black"
+                class="w-full px-3 py-2 bg-white border border-gray-300 rounded box-border text-gray-800"
                 placeholder="e.g., 30"
                 value={cookingTime()}
                 onInput={(e) => setCookingTime(e.target.value)}
@@ -244,13 +244,13 @@ Please format the response as a JSON object with a property called "meals", like
           </form>
           {/* Display Supper Ideas */}
           <Show when={supperIdeas().length > 0}>
-            <div class="mt-6 p-4 bg-gray-700 rounded-lg border border-gray-600">
-              <h3 class="text-xl font-semibold mb-2 text-purple-300">Your Supper Ideas:</h3>
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <h3 class="text-xl font-semibold mb-2 text-purple-500">Your Supper Ideas:</h3>
               <ul class="space-y-2">
                 <For each={supperIdeas()}>
                   {(meal) => (
                     <li
-                      class={`p-2 bg-gray-600 rounded hover:bg-gray-500 cursor-pointer ${imageLoading() ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+                      class={`p-2 bg-white rounded hover:bg-gray-100 cursor-pointer ${imageLoading() ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
                       onClick={() => handleSelectMeal(meal)}
                     >
                       {meal}
@@ -278,8 +278,8 @@ Please format the response as a JSON object with a property called "meals", like
           </Show>
           {/* Display Selected Meal Image */}
           <Show when={selectedMeal()}>
-            <div class="mt-6 p-4 bg-gray-700 rounded-lg border border-gray-600">
-              <h3 class="text-xl font-semibold mb-2 text-purple-300">Image of {selectedMeal()}:</h3>
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <h3 class="text-xl font-semibold mb-2 text-purple-500">Image of {selectedMeal()}:</h3>
               <Show when={imageLoading()}>
                 <p>Loading image...</p>
               </Show>
