@@ -19,7 +19,7 @@ function App() {
   const [cookingTime, setCookingTime] = createSignal('')
 
   // Response
-  const [supperIdeas, setSupperIdeas] = createSignal([]) // Now an array of meals
+  const [supperIdeas, setSupperIdeas] = createSignal([])
   const [selectedMeal, setSelectedMeal] = createSignal(null)
   const [mealImageUrl, setMealImageUrl] = createSignal('')
 
@@ -84,6 +84,7 @@ Please format the response as a JSON object with a property called "meals", like
   }
 
   const handleSelectMeal = async (meal) => {
+    if (imageLoading()) return
     setSelectedMeal(meal)
     setMealImageUrl('')
     setImageLoading(true)
@@ -173,7 +174,7 @@ Please format the response as a JSON object with a property called "meals", like
             <div>
               <label class="block mb-1 text-purple-300">Dietary Preference</label>
               <select
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border"
+                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border text-black"
                 value={dietaryPreference()}
                 onInput={(e) => setDietaryPreference(e.target.value)}
               >
@@ -188,7 +189,7 @@ Please format the response as a JSON object with a property called "meals", like
               <label class="block mb-1 text-purple-300">Preferred Cuisines</label>
               <input
                 type="text"
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border"
+                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border text-black"
                 placeholder="e.g., Italian, Chinese, Mexican"
                 value={cuisineTypes().join(', ')}
                 onInput={(e) => setCuisineTypes(e.target.value.split(',').map(s => s.trim()))}
@@ -199,7 +200,7 @@ Please format the response as a JSON object with a property called "meals", like
               <label class="block mb-1 text-purple-300">Ingredients to Include</label>
               <input
                 type="text"
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border"
+                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border text-black"
                 placeholder="e.g., chicken, broccoli"
                 value={includeIngredients()}
                 onInput={(e) => setIncludeIngredients(e.target.value)}
@@ -210,7 +211,7 @@ Please format the response as a JSON object with a property called "meals", like
               <label class="block mb-1 text-purple-300">Ingredients to Exclude</label>
               <input
                 type="text"
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border"
+                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border text-black"
                 placeholder="e.g., nuts, dairy"
                 value={excludeIngredients()}
                 onInput={(e) => setExcludeIngredients(e.target.value)}
@@ -221,7 +222,7 @@ Please format the response as a JSON object with a property called "meals", like
               <label class="block mb-1 text-purple-300">Cooking Time Available (minutes)</label>
               <input
                 type="number"
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border"
+                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded box-border text-black"
                 placeholder="e.g., 30"
                 value={cookingTime()}
                 onInput={(e) => setCookingTime(e.target.value)}
@@ -249,7 +250,7 @@ Please format the response as a JSON object with a property called "meals", like
                 <For each={supperIdeas()}>
                   {(meal) => (
                     <li
-                      class="p-2 bg-gray-600 rounded hover:bg-gray-500 cursor-pointer"
+                      class={`p-2 bg-gray-600 rounded hover:bg-gray-500 cursor-pointer ${imageLoading() ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
                       onClick={() => handleSelectMeal(meal)}
                     >
                       {meal}

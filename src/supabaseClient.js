@@ -8,7 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export async function createEvent(eventType, dataInput) {
   // Step 1: Send request to edge function and get event ID
   const { data: triggerResponse, error } = await supabase.functions.invoke('create-frontend-event', {
-    body: JSON.stringify({ event_type: eventType, data_input: dataInput, app_id: import.meta.env.APP_ID }),
+    body: JSON.stringify({ event_type: eventType, data_input: dataInput, app_id: import.meta.env.VITE_PUBLIC_APP_ID }),
   });
 
   if (error || !triggerResponse || !triggerResponse.event_id) {
