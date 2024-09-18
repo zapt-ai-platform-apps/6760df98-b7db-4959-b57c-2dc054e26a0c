@@ -1,8 +1,7 @@
-import { createSignal, createEffect, onMount, Show } from 'solid-js'
+import { createSignal, createEffect, onMount, Show, For } from 'solid-js'
 import { supabase, createEvent } from './supabaseClient'
 import { Auth } from '@supabase/auth-ui-solid'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
-import { SolidMarkdown } from "solid-markdown"
 import { Document, Packer, Paragraph, TextRun } from 'docx'
 import { saveAs } from 'file-saver'
 
@@ -10,6 +9,7 @@ function App() {
   const [user, setUser] = createSignal(null)
   const [currentPage, setCurrentPage] = createSignal('login')
   const [loading, setLoading] = createSignal(false)
+  const [imageLoading, setImageLoading] = createSignal(false)
 
   // Form fields
   const [dietaryPreference, setDietaryPreference] = createSignal('')
@@ -19,7 +19,9 @@ function App() {
   const [cookingTime, setCookingTime] = createSignal('')
 
   // Response
-  const [supperIdeas, setSupperIdeas] = createSignal('')
+  const [supperIdeas, setSupperIdeas] = createSignal([]) // Now an array of meals
+  const [selectedMeal, setSelectedMeal] = createSignal(null)
+  const [mealImageUrl, setMealImageUrl] = createSignal('')
 
   // Check if Web Share API is available
   const isShareSupported = navigator.share !== undefined
@@ -52,6 +54,9 @@ function App() {
 
   const handleGetSupperIdeas = async () => {
     setLoading(true)
+    setSupperIdeas([])
+    setSelectedMeal(null)
+    setMealImageUrl('')
     try {
       // Construct the prompt
       const prompt = `Please provide a few supper ideas based on the following preferences:
@@ -61,16 +66,40 @@ function App() {
 - Ingredients to exclude: ${excludeIngredients() || 'None'}
 - Cooking time available: ${cookingTime() || 'No preference'} minutes
 
-Please format the response in markdown.`
+Please format the response as a JSON array of meal names, like this: ["Meal 1", "Meal 2", "Meal 3"]`
       const result = await createEvent('chatgpt_request', {
         prompt: prompt,
-        response_type: 'text'
+        response_type: 'json'
       })
-      setSupperIdeas(result)
+      if (result && Array.isArray(result)) {
+        setSupperIdeas(result)
+      } else {
+        console.error('Unexpected response format:', result)
+      }
     } catch (error) {
       console.error('Error getting supper ideas:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleSelectMeal = async (meal) => {
+    setSelectedMeal(meal)
+    setMealImageUrl('')
+    setImageLoading(true)
+    try {
+      const result = await createEvent('generate_image', {
+        prompt: `A delicious dish of ${meal}.`
+      })
+      if (result) {
+        setMealImageUrl(result)
+      } else {
+        console.error('Failed to generate image')
+      }
+    } catch (error) {
+      console.error('Error generating meal image:', error)
+    } finally {
+      setImageLoading(false)
     }
   }
 
@@ -79,12 +108,13 @@ Please format the response in markdown.`
   }
 
   const handleSaveAsWord = async () => {
+    const mealsText = supperIdeas().join('\n')
     const doc = new Document({
       sections: [{
         properties: {},
         children: [
           new Paragraph({
-            children: [new TextRun(supperIdeas().replace(/<\/?[^>]+(>|$)/g, ""))],
+            children: [new TextRun(mealsText)],
           }),
         ],
       }],
@@ -99,7 +129,7 @@ Please format the response in markdown.`
       try {
         await navigator.share({
           title: 'My Supper Ideas',
-          text: supperIdeas().replace(/<\/?[^>]+(>|$)/g, ""),
+          text: supperIdeas().join('\n'),
         })
       } catch (error) {
         console.error('Error sharing:', error)
@@ -212,12 +242,21 @@ Please format the response in markdown.`
             </div>
           </form>
           {/* Display Supper Ideas */}
-          <Show when={supperIdeas()}>
+          <Show when={supperIdeas().length > 0}>
             <div class="mt-6 p-4 bg-gray-700 rounded-lg border border-gray-600">
               <h3 class="text-xl font-semibold mb-2 text-purple-300">Your Supper Ideas:</h3>
-              <div class="text-white prose">
-                <SolidMarkdown children={supperIdeas()} />
-              </div>
+              <ul class="space-y-2">
+                <For each={supperIdeas()}>
+                  {(meal) => (
+                    <li
+                      class="p-2 bg-gray-600 rounded hover:bg-gray-500 cursor-pointer"
+                      onClick={() => handleSelectMeal(meal)}
+                    >
+                      {meal}
+                    </li>
+                  )}
+                </For>
+              </ul>
               <div class="flex space-x-4 mt-4">
                 <button
                   class="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
@@ -234,6 +273,18 @@ Please format the response in markdown.`
                   </button>
                 </Show>
               </div>
+            </div>
+          </Show>
+          {/* Display Selected Meal Image */}
+          <Show when={selectedMeal()}>
+            <div class="mt-6 p-4 bg-gray-700 rounded-lg border border-gray-600">
+              <h3 class="text-xl font-semibold mb-2 text-purple-300">Image of {selectedMeal()}:</h3>
+              <Show when={imageLoading()}>
+                <p>Loading image...</p>
+              </Show>
+              <Show when={!imageLoading() && mealImageUrl()}>
+                <img src={mealImageUrl()} alt={selectedMeal()} class="w-full rounded" />
+              </Show>
             </div>
           </Show>
         </div>
