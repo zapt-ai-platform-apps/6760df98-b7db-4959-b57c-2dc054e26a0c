@@ -66,13 +66,13 @@ function App() {
 - Ingredients to exclude: ${excludeIngredients() || 'None'}
 - Cooking time available: ${cookingTime() || 'No preference'} minutes
 
-Please format the response as a JSON array of meal names, like this: ["Meal 1", "Meal 2", "Meal 3"]`
+Please format the response as a JSON object with a property called "meals", like this: { "meals": ["Meal 1", "Meal 2", "Meal 3"] }`
       const result = await createEvent('chatgpt_request', {
         prompt: prompt,
         response_type: 'json'
       })
-      if (result && Array.isArray(result)) {
-        setSupperIdeas(result)
+      if (result && Array.isArray(result.meals)) {
+        setSupperIdeas(result.meals)
       } else {
         console.error('Unexpected response format:', result)
       }
@@ -144,7 +144,7 @@ Please format the response as a JSON array of meal names, like this: ["Meal 1", 
       <Show
         when={currentPage() === 'homePage'}
         fallback={
-          <div class="w-full max-w-md p-6 bg-gray-800 rounded-lg shadow-md">
+          <div class="w-full max-w-md p-6 bg-gray-800 rounded-lg shadow-md h-full">
             <h2 class="text-2xl font-bold mb-4 text-center text-purple-500">Sign in with ZAPT</h2>
             <a href="https://www.zapt.ai" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:underline mb-4 block text-center">
               Learn more about ZAPT
@@ -157,7 +157,7 @@ Please format the response as a JSON array of meal names, like this: ["Meal 1", 
           </div>
         }
       >
-        <div class="w-full max-w-2xl p-6 bg-gray-800 rounded-lg shadow-md">
+        <div class="w-full max-w-2xl p-6 bg-gray-800 rounded-lg shadow-md h-full">
           <h1 class="text-2xl font-bold mb-6 text-center text-purple-500">Get Supper Ideas</h1>
           <div class="flex justify-end mb-6">
             <button

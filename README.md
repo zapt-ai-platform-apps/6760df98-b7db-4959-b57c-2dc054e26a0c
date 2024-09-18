@@ -27,7 +27,8 @@ This app helps you get personalized supper ideas after a brief set of questions 
    - The user clicks on the "Get Supper Ideas" button.
    - The app shows a loading state while fetching ideas.
    - The app uses AI to generate personalized supper ideas based on the user's answers.
-   - The ideas are now displayed as a list of meals.
+   - **Note**: The AI ensures the response is in a JSON object with a property `meals` containing the array of meal ideas.
+   - The ideas are displayed as a list of meals.
 
 4. **Selecting a Meal and Viewing its Image**
 
@@ -50,3 +51,6 @@ This app helps you get personalized supper ideas after a brief set of questions 
 
 - The app has a modern dark theme with bright purple accents for action elements, making it visually appealing and user-friendly.
 - Responsive design ensures optimal experience across different screen sizes.
+- Loading states are displayed during API calls to provide feedback to the user.
+- Buttons are disabled during loading to prevent multiple submissions.
+- The design is optimized to prevent any white space below the app on any screen size.
